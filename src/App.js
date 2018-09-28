@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import LightsView from './LightsView';
+import GroupsView from './GroupsView';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 class App extends Component {
@@ -9,9 +9,9 @@ class App extends Component {
       <MuiThemeProvider>
         <div className="App">
           <header className="App-header">
-            <h1 className="App-title">A Philips Hue React app</h1>
+            <h1 className="App-title">Home Lighting</h1>
           </header>
-          <LightsView />
+          <GroupsView />
         </div>
       </MuiThemeProvider>
     );

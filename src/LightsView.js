@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import LightItem from './LightItem';
+import GroupItem from './GroupItem';
 import Config from './config';
 
 class LightsView extends Component {
   constructor(props) {
     super(props);
+    this.lights =props.lights;
     this.requestFailed = false;
-    this.data = null;
+    this.lightData = null;
 
     this.onToggleLight = this.onToggleLight.bind(this);
     this.fetchData = this.fetchData.bind(this);
-    this.onBrightnessChanged = this.onBrightnessChanged.bind(this);
+    this.onLightBrightnessChanged = this.onLightBrightnessChanged.bind(this);
     setInterval(this.fetchData,5000);
   }
 
@@ -18,14 +20,14 @@ class LightsView extends Component {
     this.fetchData();
   }
 
-  getUrlWithUsername() {
+  getLightsUrlWithUsername() {
     return Config.apiUrl + '/api/' + Config.username + '/lights';
   }
 
   fetchData() {
-    let url = this.getUrlWithUsername();
+    let lightsUrl = this.getLightsUrlWithUsername();
 
-    fetch(url)
+    fetch(lightsUrl)
       .then(response => {
         if (!response.ok) {
             throw Error('Network request failed');
@@ -34,19 +36,19 @@ class LightsView extends Component {
       })
       .then(d => d.json())
       .then(d => {
-        this.data = d;
+        this.lightData = d;
         this.requestFailed = false;
         this.setState({newData:new Date()});
       }, () => {
         this.requestFailed = true;
         this.setState({newData:new Date()});
-      })
+      }) 
   }
 
-  changeState(id, bodyData) {
-    let url = this.getUrlWithUsername() + '/' + id + '/state';
+  changeLightState(id, bodyData) {
+    let lightsUrl = this.getLightsUrlWithUsername() + '/' + id + '/state';
 
-    fetch(url, { method: 'PUT', body: bodyData })
+    fetch(lightsUrl, { method: 'PUT', body: bodyData })
       .then(response => {
         if (!response.ok) {
           throw Error('Network request failed');
@@ -64,45 +66,48 @@ class LightsView extends Component {
 
   onToggleLight(id, isOn) {
     let bodyData = '{"on":' + !isOn + '}';
-    this.changeState(id, bodyData);
+    this.changeLightState(id, bodyData);
   }
 
-  onBrightnessChanged(id, newValue) {
+  onLightBrightnessChanged(id, newValue) {
     let bodyData = '{"bri":' + newValue + '}';
-    this.changeState(id, bodyData);
+    this.changeLightState(id, bodyData);
   }
 
   render() {
     if (this.requestFailed) {
-      let url = this.getUrlWithUsername();
+      let url = this.getLightsUrlWithUsername();
       return <p className='warning'>Could not fetch from {url}</p>
     }
 
-    if (!this.data) {
+    if (!this.lightData) {
       return <p>Loading...</p>;
     }
 
-    if (this.data[0] !== undefined) {
-      return <p className='warning'>{this.data[0].error.description}</p>;
+    if (this.lightData[0] !== undefined) {
+      return <p className='warning'>{this.lightData[0].error.description}</p>;
     }
 
-    let data = this.data;
+    let lightData = this.lightData;
+    let groupLights = this.lights;
     let lightItems = [];
-    let toggleHandler = this.onToggleLight;
-    let brightnessHandler = this.onBrightnessChanged;
-    Object.keys(data).forEach(function(id,index) {
-      let item = data[id];
-      let light = <LightItem key={id} id={id} name={data[id].name} 
-                  isOn={item.state.on} bri={item.state.bri} 
-                  reachable={item.state.reachable} 
-                  onToggleLight={toggleHandler}
-                  onBrightnessChanged={brightnessHandler}/>
-      lightItems.push(light);
-    });
+    let lightToggleHandler = this.onToggleLight;
+    let lightBrightnessHandler = this.onLightBrightnessChanged;
+      Object.keys(lightData).forEach(function(id) {
+        if ( groupLights.includes( id ) ) {
+          let item = lightData[id];
+          let light = <LightItem key={id} id={id} name={lightData[id].name} 
+                      isOn={item.state.on} bri={item.state.bri} 
+                      reachable={true} 
+                      onToggleLight={lightToggleHandler}
+                      onBrightnessChanged={lightBrightnessHandler}/>
+          lightItems.push(light);
+        }
+      });
 
     return (
-      <div align='center' style={{maxWidth:950,margin: '20px auto 0'}}>
-        {lightItems}
+      <div align='center' style={{maxWidth:950,margin: '20px auto 0'}}>    
+          {lightItems}
       </div>
     );
   }
