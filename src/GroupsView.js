@@ -91,20 +91,20 @@ class GroupsView extends Component {
     let groupToggleHandler = this.onToggleGroup;
     let groupBrightnessHandler = this.onGroupBrightnessChanged;
     if ( groupData ) {
-      Object.keys(groupData).forEach(function(id) {
-        let item = groupData[id];
-        let group = <GroupItem key={id} id={id} name={groupData[id].name} 
-                    isOn={item.state.all_on || item.state.any_on} bri={item.action.bri} 
-                    reachable={true} 
-                    onToggleLight={groupToggleHandler}
-                    onBrightnessChanged={groupBrightnessHandler}
-                    lights={item.lights}/>
-        groupItems.push(group);      
-      });
+        Object.keys(groupData).forEach(function(id) {
+            let item = groupData[id];
+            let group = <GroupItem key={id} id={id} name={groupData[id].name} 
+                        isOn={item.state.all_on || item.state.any_on} bri={item.action.bri} 
+                        reachable={true} 
+                        onToggleLight={groupToggleHandler}
+                        onBrightnessChanged={groupBrightnessHandler}
+                        lights={item.lights}/>
+            groupItems.push(group);      
+        });
     }
 
     return (
-      <div align='center' style={{maxWidth:950,margin: '20px auto 0'}}>
+      <div className="groups" align='center' style={{maxWidth:950,margin: '20px auto 0'}}>
           {groupItems}
       </div>
     );

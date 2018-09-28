@@ -3,7 +3,7 @@ import Toggle from 'material-ui/Toggle';
 import Slider from 'material-ui/Slider';
 
 const LightItem = (props) => (
-  <div className='items'>
+  <div className='light items'>
     <div className='item toggle'>
         <Toggle
           toggled={props.isOn}

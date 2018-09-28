@@ -4,26 +4,28 @@ import Slider from 'material-ui/Slider';
 import LightsView from './LightsView';
 
 const GroupItem = (props) => (
-  <div className='items'>
-    <div className='item toggle'>
-        <Toggle
-          toggled={props.isOn}
-          label={props.name} 
-          onToggle={() => props.onToggleLight(props.id,props.isOn)}
-          disabled={!props.reachable}
-        />
-        {props.reachable ? '' : <div className='warning'>not reachable</div>}
+  <div className='group items'>
+    <div className="groupHeader">
+      <div className='item toggle'>
+          <Toggle
+            toggled={props.isOn}
+            label={props.name} 
+            onToggle={() => props.onToggleLight(props.id,props.isOn)}
+            disabled={!props.reachable}
+          />
+          {props.reachable ? '' : <div className='warning'>not reachable</div>}
+      </div>
+      {props.reachable ? 
+        <div className='item slider'>
+          <Slider
+            min={0}
+            max={255}
+            step={1}
+            value={props.bri}
+            onChange={(event,newValue) => props.onBrightnessChanged(props.id,newValue)}     
+          />
+        </div> : '' }
     </div>
-    {props.reachable ? 
-      <div className='item slider'>
-        <Slider
-          min={0}
-          max={255}
-          step={1}
-          value={props.bri}
-          onChange={(event,newValue) => props.onBrightnessChanged(props.id,newValue)}     
-        />
-      </div> : '' }
     <LightsView lights={props.lights} />      
   </div>
 );

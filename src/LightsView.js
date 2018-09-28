@@ -94,7 +94,7 @@ class LightsView extends Component {
     let lightToggleHandler = this.onToggleLight;
     let lightBrightnessHandler = this.onLightBrightnessChanged;
       Object.keys(lightData).forEach(function(id) {
-        if ( groupLights.includes( id ) ) {
+        if ( groupLights && groupLights.includes( id ) ) {
           let item = lightData[id];
           let light = <LightItem key={id} id={id} name={lightData[id].name} 
                       isOn={item.state.on} bri={item.state.bri} 
@@ -106,7 +106,7 @@ class LightsView extends Component {
       });
 
     return (
-      <div align='center' style={{maxWidth:950,margin: '20px auto 0'}}>    
+      <div className="lights" align='center' style={{width:'100%',margin: '20px auto 0'}}>    
           {lightItems}
       </div>
     );

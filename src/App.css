@@ -27,7 +27,29 @@
    border-color: #aacccc;
    border-width: thin;
    border-style: none;
-   margin-bottom: 50px;      
+   margin-bottom: 50px;    
+   padding: 10px;  
+}
+
+.group {
+  padding: 0;
+}
+
+.group {
+  border-color: #aacccc;
+  border-width: thin;  
+  border-style: solid;
+}
+
+.lights {
+  padding-top: 20px;
+  border-top-color: #aacccc;
+  border-top-width: thin;  
+  border-top-style: solid;
+}
+
+.groupHeader {
+  padding-bottom: 20px;
 }
 
 .item {
