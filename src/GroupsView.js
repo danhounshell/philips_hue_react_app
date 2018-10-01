@@ -11,7 +11,7 @@ class GroupsView extends Component {
     this.onToggleGroup = this.onToggleGroup.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.onGroupBrightnessChanged = this.onGroupBrightnessChanged.bind(this);
-    setInterval(this.fetchData,5000);
+    setInterval(this.fetchData,30000);
   }
 
   componentWillMount() {

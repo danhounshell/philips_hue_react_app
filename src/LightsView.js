@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import LightItem from './LightItem';
-import GroupItem from './GroupItem';
 import Config from './config';
 
 class LightsView extends Component {
@@ -13,7 +12,7 @@ class LightsView extends Component {
     this.onToggleLight = this.onToggleLight.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.onLightBrightnessChanged = this.onLightBrightnessChanged.bind(this);
-    setInterval(this.fetchData,5000);
+    setInterval(this.fetchData,30000);
   }
 
   componentWillMount() {
