@@ -23,7 +23,7 @@ const LightItem = (props) => (
           value={props.bri}
           onChange={(event,newValue) => props.onBrightnessChanged(props.id,newValue)}     
         />
-        <div><button className="warning" onClick={() => props.onAlertLight(props.id) }>Send Alert</button></div>        
+        <div><button className="alertButton" onClick={() => props.onAlertLight(props.id) }>Send Alert</button></div>        
       </div> : '' }
   </div>
 );

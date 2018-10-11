@@ -122,7 +122,7 @@ class LightsView extends Component {
       });
 
     return (
-      <div className="lights" align='center' style={{width:'100%',margin: '20px auto 0'}}>    
+      <div className="lights" align='center'>    
           {lightItems}
       </div>
     );
