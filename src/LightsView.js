@@ -10,14 +10,19 @@ class LightsView extends Component {
     this.lightData = null;
 
     this.onToggleLight = this.onToggleLight.bind(this);
+    this.onAlertLight = this.onAlertLight.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.onLightBrightnessChanged = this.onLightBrightnessChanged.bind(this);
-    setInterval(this.fetchData,30000);
+    this.onStateChanged = props.onStateChanged;
   }
 
   componentWillMount() {
     this.fetchData();
   }
+
+  componentWillReceiveProps(nextProps) {
+    this.fetchData();  
+  } 
 
   getLightsUrlWithUsername() {
     return Config.apiUrl + '/api/' + Config.username + '/lights';
@@ -57,7 +62,7 @@ class LightsView extends Component {
       .then(d => d.json())
       .then(d => {
         this.requestFailed = false;
-        this.fetchData();
+        this.onStateChanged();
       }, () => {
         this.requestFailed = true;
       })
@@ -66,6 +71,15 @@ class LightsView extends Component {
   onToggleLight(id, isOn) {
     let bodyData = '{"on":' + !isOn + '}';
     this.changeLightState(id, bodyData);
+  }
+
+  onAlertLight(id) {
+    let bodyData = '{"alert":"select"}';
+    this.changeLightState(id, bodyData);
+    setTimeout(function(){ 
+      let bodyData = '{"alert":"none"}';
+      this.changeLightState(id, bodyData);
+    }.bind(this), 10000);
   }
 
   onLightBrightnessChanged(id, newValue) {
@@ -92,14 +106,17 @@ class LightsView extends Component {
     let lightItems = [];
     let lightToggleHandler = this.onToggleLight;
     let lightBrightnessHandler = this.onLightBrightnessChanged;
+    let alertHandler = this.onAlertLight;
       Object.keys(lightData).forEach(function(id) {
         if ( groupLights && groupLights.includes( id ) ) {
           let item = lightData[id];
           let light = <LightItem key={id} id={id} name={lightData[id].name} 
                       isOn={item.state.on} bri={item.state.bri} 
-                      reachable={true} 
+                      reachable={item.state.reachable} 
+                      isAlert={item.state.alert}
                       onToggleLight={lightToggleHandler}
-                      onBrightnessChanged={lightBrightnessHandler}/>
+                      onBrightnessChanged={lightBrightnessHandler}
+                      onAlertLight={alertHandler}/>
           lightItems.push(light);
         }
       });

@@ -11,11 +11,9 @@ const GroupItem = (props) => (
             toggled={props.isOn}
             label={props.name} 
             onToggle={() => props.onToggleLight(props.id,props.isOn)}
-            disabled={!props.reachable}
           />
-          {props.reachable ? '' : <div className='warning'>not reachable</div>}
+          {props.allOn ? <div className='notice'>All lights are on</div> : <div>&nbsp;</div>}
       </div>
-      {props.reachable ? 
         <div className='item slider'>
           <Slider
             min={0}
@@ -24,9 +22,9 @@ const GroupItem = (props) => (
             value={props.bri}
             onChange={(event,newValue) => props.onBrightnessChanged(props.id,newValue)}     
           />
-        </div> : '' }
+        </div>
     </div>
-    <LightsView lights={props.lights} />      
+    <LightsView lights={props.lights} onStateChanged={props.onStateChanged} />      
   </div>
 );
 

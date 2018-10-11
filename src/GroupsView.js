@@ -90,12 +90,15 @@ class GroupsView extends Component {
     let groupItems = [];
     let groupToggleHandler = this.onToggleGroup;
     let groupBrightnessHandler = this.onGroupBrightnessChanged;
+    let onStateChangedHandler = this.fetchData;
     if ( groupData ) {
         Object.keys(groupData).forEach(function(id) {
             let item = groupData[id];
             let group = <GroupItem key={id} id={id} name={groupData[id].name} 
-                        isOn={item.state.all_on || item.state.any_on} bri={item.action.bri} 
-                        reachable={true} 
+                        isOn={item.state.any_on} bri={item.action.bri} 
+                        allOn={item.state.all_on}
+                        anyOn={item.state.any_on}
+                        onStateChanged={onStateChangedHandler}
                         onToggleLight={groupToggleHandler}
                         onBrightnessChanged={groupBrightnessHandler}
                         lights={item.lights}/>

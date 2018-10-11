@@ -12,6 +12,7 @@ const LightItem = (props) => (
           disabled={!props.reachable}
         />
         {props.reachable ? '' : <div className='warning'>not reachable</div>}
+        {props.isAlert !== 'none' ? <div className='warning'>ALERT</div> : ''}
     </div>
     {props.reachable ? 
       <div className='item slider'>
@@ -22,6 +23,7 @@ const LightItem = (props) => (
           value={props.bri}
           onChange={(event,newValue) => props.onBrightnessChanged(props.id,newValue)}     
         />
+        <div><button className="warning" onClick={() => props.onAlertLight(props.id) }>Send Alert</button></div>        
       </div> : '' }
   </div>
 );
