@@ -9,12 +9,12 @@ const GroupItem = (props) => (
           <Toggle
             toggled={props.isOn}
             label={props.name} 
-            onToggle={() => props.onToggleLight(props.id,props.isOn)}
+            onToggle={() => props.onToggleGroup(props.id,props.isOn)}
           />
           {props.allOn ? <div className='notice'>All lights are on</div> : <div>&nbsp;</div>}
       </div>
     </div>
-    <LightsView lights={props.lights} onStateChanged={props.onStateChanged} />      
+    <LightsView includesLights={props.includesLights} onStateChanged={props.onStateChanged} />      
   </div>
 );
 

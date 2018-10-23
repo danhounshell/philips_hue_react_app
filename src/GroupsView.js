@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import GroupItem from './GroupItem';
-import Config from './config';
+import hueApi from './api/phillipsHue';
 
 class GroupsView extends Component {
   constructor(props) {
@@ -8,9 +8,8 @@ class GroupsView extends Component {
     this.requestFailed = false;
     this.groupData = null;
 
-    this.onToggleGroup = this.onToggleGroup.bind(this);
     this.fetchData = this.fetchData.bind(this);
-    this.onGroupBrightnessChanged = this.onGroupBrightnessChanged.bind(this);
+    this.onToggleGroup = this.onToggleGroup.bind(this);
     setInterval(this.fetchData,30000);
   }
 
@@ -18,63 +17,32 @@ class GroupsView extends Component {
     this.fetchData();
   }
 
-  getGroupsUrlWithUsername() {
-    return Config.apiUrl + '/api/' + Config.username + '/groups';
+  getGroupsUrl() {
+    return hueApi.groupsUrl();
   } 
 
   fetchData() {
-    let groupsUrl = this.getGroupsUrlWithUsername();
-
-    fetch(groupsUrl)
-      .then(response => {
-        if (!response.ok) {
-            throw Error('Network request failed');
-        }    
-        return response;
-      })
-      .then(d => d.json())
-      .then(d => {
-        this.groupData = d;
-        this.requestFailed = false;
+    hueApi.fetchGroups()
+      .then( d => {
+        this.groupData = d.groupData;
+        this.requestFailed = d.requestFailed;
         this.setState({newData:new Date()});
-      }, () => {
-        this.requestFailed = true;
-        this.setState({newData:new Date()});
-      })      
+      });
   }
 
-  changeGroupState(id, bodyData) {
-    let groupsUrl = this.getGroupsUrlWithUsername() + '/' + id + '/action';
-
-    fetch(groupsUrl, { method: 'PUT', body: bodyData })
-      .then(response => {
-        if (!response.ok) {
-          throw Error('Network request failed');
-        }
-        return response;
-      })
-      .then(d => d.json())
+  onToggleGroup(id, isOn) {
+    hueApi.toggleGroup(id, isOn)
       .then(d => {
-        this.requestFailed = false;
+        this.requestFailed = d.requestFailed;
         this.fetchData();
       }, () => {
         this.requestFailed = true;
       })
   }
 
-  onToggleGroup(id, isOn) {
-    let bodyData = '{"on":' + !isOn + '}';
-    this.changeGroupState(id, bodyData);
-  }
-
-  onGroupBrightnessChanged(id, newValue) {
-    let bodyData = '{"bri":' + newValue + '}';
-    this.changeGroupState(id, bodyData);
-  }
-
   render() {
     if (this.requestFailed) {
-      let url = this.getLightsUrlWithUsername();
+      let url = this.getGroupsUrlWithUsername();
       return <p className='warning'>Could not fetch from {url}</p>
     }
 
@@ -89,7 +57,6 @@ class GroupsView extends Component {
     let groupData = this.groupData;
     let groupItems = [];
     let groupToggleHandler = this.onToggleGroup;
-    let groupBrightnessHandler = this.onGroupBrightnessChanged;
     let onStateChangedHandler = this.fetchData;
     if ( groupData ) {
         Object.keys(groupData).forEach(function(id) {
@@ -99,9 +66,8 @@ class GroupsView extends Component {
                         allOn={item.state.all_on}
                         anyOn={item.state.any_on}
                         onStateChanged={onStateChangedHandler}
-                        onToggleLight={groupToggleHandler}
-                        onBrightnessChanged={groupBrightnessHandler}
-                        lights={item.lights}/>
+                        onToggleGroup={groupToggleHandler}
+                        includesLights={item.lights}/>
             groupItems.push(group);      
         });
     }
